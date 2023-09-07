@@ -6,7 +6,7 @@ from scipy.spatial.transform import Rotation as R
 
 
 class UnicycleEnv:
-    def __init__(self, dt=0.01):
+    def __init__(self, dt=0.1):
         # initialize all member attributes
         self.state = None
         self.robot_r = None

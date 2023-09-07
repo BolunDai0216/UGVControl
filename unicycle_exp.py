@@ -11,10 +11,10 @@ def main():
     
     df = pd.read_csv('data/path.csv')
     p_des_list = df[["x", "y"]].values
-    p_des_index = 20
+    p_des_index = -1
     p_des = p_des_list[p_des_index, :]
     
-    state = env.reset(set_init_state=[p_des_list[0, 0], p_des_list[0, 1], 0])
+    state = env.reset(set_init_state=[20, 8, 0])
 
     kv = 0.1
     kω = 2.0
@@ -30,16 +30,17 @@ def main():
         θ_error = target_θ - env.state[2]
         
         if np.abs(θ_error) < 0.5:
-            v = np.clip(kv * p_error, -0.5, 0.5)
+            v = np.clip(kv * p_error, -1.5, 1.5)
             ω = 0.0
-            breakpoint()
+            # breakpoint()
         else:
             v = 0.0
             ω = np.clip(kω * (target_θ - env.state[2]), -0.5, 0.5)
             
         control = np.array([v, ω])
         
-        if np.max(control) >= 1:
+        if np.max(control) >= 2:
+            breakpoint()
             print("Max Control Exceeds 1, Exiting...")
             break
         
