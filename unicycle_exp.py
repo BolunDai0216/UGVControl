@@ -1,33 +1,71 @@
 import pickle
 
 import numpy as np
+import pandas as pd
 
 from unicycle_env import UnicycleEnv
 
 
 def main():
     env = UnicycleEnv()
-    state = env.reset()
     
-    p_des = np.array([2, 2])
-    kv = 0.5
+    df = pd.read_csv('data/path.csv')
+    p_des_list = df[["x", "y"]].values
+    p_des_index = 20
+    p_des = p_des_list[p_des_index, :]
+    
+    state = env.reset(set_init_state=[p_des_list[0, 0], p_des_list[0, 1], 0])
+
+    kv = 0.1
     kω = 2.0
     
     states = []
+    controls = []
     
     for i in range(10000):
         target_θ = np.arctan2(p_des[1] - env.state[1], p_des[0] - env.state[0])
-        v = kv * np.sqrt(
+        p_error = np.sqrt(
             (p_des[0] - env.state[0]) ** 2 + (p_des[1] - env.state[1]) ** 2
         )
-        ω = kω * (target_θ - env.state[2])
+        θ_error = target_θ - env.state[2]
+        
+        if np.abs(θ_error) < 0.5:
+            v = np.clip(kv * p_error, -0.5, 0.5)
+            ω = 0.0
+            breakpoint()
+        else:
+            v = 0.0
+            ω = np.clip(kω * (target_θ - env.state[2]), -0.5, 0.5)
+            
         control = np.array([v, ω])
         
+        if np.max(control) >= 1:
+            print("Max Control Exceeds 1, Exiting...")
+            break
+        
         state = env.step(control)
+        
         states.append(state)
+        controls.append(control)
+        
+        # if p_error < 0.000001:
+        #     p_des_index = np.min([p_des_index + 1, len(p_des_list) - 1])
+        #     p_des = p_des_list[p_des_index]
+        
+        # if i % 100 == 0:
+        #     p_des_index = np.min([p_des_index + 1, len(p_des_list) - 1])
+        #     p_des = p_des_list[p_des_index]
+        
+        print(state, p_des)
+            
+    data = {
+        "states": states,
+        "p_des_list": p_des_list,
+        "controls": controls,
+    }
     
     with open("unicycle_exp.pkl", "wb") as f:
-        pickle.dump(states, f)
+        pickle.dump(data, f)
     
 
 
