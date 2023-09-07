@@ -1,3 +1,5 @@
+import pickle
+
 import numpy as np
 
 from unicycle_env import UnicycleEnv
@@ -11,6 +13,8 @@ def main():
     kv = 0.5
     kω = 2.0
     
+    states = []
+    
     for i in range(10000):
         target_θ = np.arctan2(p_des[1] - env.state[1], p_des[0] - env.state[0])
         v = kv * np.sqrt(
@@ -20,8 +24,11 @@ def main():
         control = np.array([v, ω])
         
         state = env.step(control)
-        
-        print(state)
+        states.append(state)
+    
+    with open("unicycle_exp.pkl", "wb") as f:
+        pickle.dump(states, f)
+    
 
 
 if __name__ == "__main__":
