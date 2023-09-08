@@ -12,12 +12,13 @@ def main():
     np.set_printoptions(precision=3)
 
     df = pd.read_csv("data/path.csv")
-    p_des_list = df[["x", "y"]].values
+    p_des_array = df[["x", "y"]].values
 
-    state = env.reset(set_init_state=[p_des_list[0, 0], p_des_list[0, 1], np.pi])
+    state = env.reset(set_init_state=[p_des_array[0, 0], p_des_array[0, 1], np.pi])
 
     p_des_index = 20
-    p_des = p_des_list[p_des_index, :]
+    p_des = p_des_array[p_des_index, :]
+    p_des_list = [p_des]
 
     states = []
     controls = []
@@ -32,11 +33,12 @@ def main():
         if p_error < 0.01:
             print(i, state, control, p_des, p_error)
 
-            if p_des_index == p_des_list.shape[0] - 1:
+            if p_des_index == p_des_array.shape[0] - 1:
                 break
             else:
-                p_des_index = np.minimum(p_des_index + 20, p_des_list.shape[0] - 1)
-                p_des = p_des_list[p_des_index, :]
+                p_des_index = np.minimum(p_des_index + 20, p_des_array.shape[0] - 1)
+                p_des = p_des_array[p_des_index, :]
+                p_des_list.append(p_des)
 
     data = {
         "states": states,
