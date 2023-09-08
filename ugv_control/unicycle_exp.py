@@ -11,6 +11,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--pathData", type=str, default="path.csv")
     parser.add_argument("--saveFilename", type=str, default="unicycle_exp")
+    parser.add_argument("--show", action="store_true")
     args = parser.parse_args()
 
     env = UnicycleEnv(dt=0.01)
@@ -54,7 +55,7 @@ def main():
     with open(f"../data/{args.saveFilename}.pkl", "wb") as f:
         pickle.dump(data, f)
 
-    visualize_exp(data, f"../imgs/{args.saveFilename}.png", show=False)
+    visualize_exp(data, f"../imgs/{args.saveFilename}.png", show=args.show)
 
 
 if __name__ == "__main__":
