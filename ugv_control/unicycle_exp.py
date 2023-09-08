@@ -1,17 +1,22 @@
+import argparse
 import pickle
 
 import numpy as np
 import pandas as pd
-
 from unicycle_env import UnicycleEnv
 from utils import get_p_control
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--pathData", type=str, default="path.csv")
+    parser.add_argument("--saveFilename", type=str, default="unicycle_exp")
+    args = parser.parse_args()
+
     env = UnicycleEnv(dt=0.01)
     np.set_printoptions(precision=3)
 
-    df = pd.read_csv("data/path.csv")
+    df = pd.read_csv("../data/" + args.pathData)
     p_des_array = df[["x", "y"]].values
 
     state = env.reset(set_init_state=[p_des_array[0, 0], p_des_array[0, 1], np.pi])
@@ -46,7 +51,7 @@ def main():
         "controls": controls,
     }
 
-    with open("../data/unicycle_exp.pkl", "wb") as f:
+    with open(f"../data/{args.saveFilename}.pkl", "wb") as f:
         pickle.dump(data, f)
 
 
