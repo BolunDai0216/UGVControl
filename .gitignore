@@ -162,3 +162,9 @@ cython_debug/
 # Data
 data/
 imgs
+
+# MacOS
+.DS_Store
+
+# VS Code
+.vscode/
