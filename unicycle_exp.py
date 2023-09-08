@@ -9,11 +9,12 @@ from utils import get_p_control
 
 def main():
     env = UnicycleEnv(dt=0.01)
-    state = env.reset(set_init_state=[20, 8, -np.pi])
     np.set_printoptions(precision=3)
 
     df = pd.read_csv("data/path.csv")
     p_des_list = df[["x", "y"]].values
+
+    state = env.reset(set_init_state=[p_des_list[0, 0], p_des_list[0, 1], np.pi])
 
     p_des_index = 20
     p_des = p_des_list[p_des_index, :]
