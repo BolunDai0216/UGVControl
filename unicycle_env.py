@@ -6,7 +6,7 @@ from scipy.spatial.transform import Rotation as R
 
 
 class UnicycleEnv:
-    def __init__(self, dt=0.1):
+    def __init__(self, dt=0.01):
         # initialize all member attributes
         self.state = None
         self.robot_r = None
@@ -52,8 +52,16 @@ class UnicycleEnv:
 
         nextstate = self.state + self.dstate * self.dt
 
-        nextstate[2] = math.remainder(nextstate[2], 2 * math.pi)
+        nextstate[2] = self.wrap_angle(nextstate[2])
 
         self.state = nextstate
 
         return copy.deepcopy(self.state)
+
+    def wrap_angle(self, angle):
+        """Wrap angle between -π and π."""
+        wrapped_angle = angle % (2 * math.pi)
+        if wrapped_angle > math.pi:
+            wrapped_angle -= 2 * math.pi
+
+        return wrapped_angle
