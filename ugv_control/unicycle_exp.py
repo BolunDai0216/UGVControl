@@ -15,7 +15,7 @@ def main():
     args = parser.parse_args()
 
     env = UnicycleEnv(dt=0.01)
-    np.set_printoptions(precision=3)
+    np.set_printoptions(precision=2)
 
     df = pd.read_csv("../data/" + args.pathData)
     p_des_array = df[["x", "y"]].values
@@ -37,7 +37,9 @@ def main():
         controls.append(control)
 
         if p_error < 0.01:
-            print(i, state, control, p_des, p_error)
+            print(
+                f"Iter {i:.3e}: x={state} \t Δp={p_error:.3e} \t x*={p_des} \t u={control}"
+            )
 
             if p_des_index == p_des_array.shape[0] - 1:
                 break

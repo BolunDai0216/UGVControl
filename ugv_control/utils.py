@@ -13,7 +13,7 @@ def get_yaw_error(yaw, yaw_des):
     R1 = R.from_euler("z", yaw).as_matrix()
     R2 = R.from_euler("z", yaw_des).as_matrix()
     R_error = R.from_matrix(R1.T @ R2)
-    yaw_error = R_error.as_euler("zyx")[0]
+    yaw_error = R_error.as_rotvec()[-1]
 
     return yaw_error
 
