@@ -46,7 +46,7 @@ def main():
         "controls": controls,
     }
 
-    with open("data/unicycle_exp.pkl", "wb") as f:
+    with open("../data/unicycle_exp.pkl", "wb") as f:
         pickle.dump(data, f)
 
 
