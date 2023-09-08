@@ -1,9 +1,12 @@
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.ticker import MultipleLocator
 from scipy.spatial.transform import Rotation as R
 
-
-def sigmoid(z):
-    return 1 / (1 + np.exp(-z))
+mpl.rcParams["text.usetex"] = True
+mpl.rcParams["text.latex.preamble"] = r"\usepackage{amsmath}"
+plt.rcParams["font.size"] = 16
 
 
 def get_yaw_error(yaw, yaw_des):
@@ -29,3 +32,54 @@ def get_p_control(
     control = np.array([v, w])
 
     return control, p_error, yaw_error
+
+
+def visualize_exp(data, img_name, xgrid=2.0, ygrid=2.0, show=False):
+    states = np.concatenate(data["states"]).reshape(-1, 3)
+    p_des = np.concatenate(data["p_des_list"]).reshape(-1, 2)
+
+    fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+
+    ax.plot(
+        states[:, 0],
+        states[:, 1],
+        color="cornflowerblue",
+        linewidth=3,
+        zorder=20,
+        label="Trajectory",
+    )
+    ax.plot(
+        p_des[:, 0],
+        p_des[:, 1],
+        "o",
+        color="darkorange",
+        markersize=5,
+        zorder=10,
+        label="Waypoints",
+    )
+
+    ax.xaxis.set_major_locator(MultipleLocator(xgrid))
+    ax.xaxis.set_minor_locator(MultipleLocator(xgrid / 4))
+    ax.yaxis.set_major_locator(MultipleLocator(ygrid))
+    ax.yaxis.set_minor_locator(MultipleLocator(ygrid / 4))
+
+    ax.grid(True, "minor", color="0.85", linewidth=0.50, zorder=-20)
+    ax.grid(True, "major", color="0.65", linewidth=0.75, zorder=-10)
+    ax.tick_params(which="both", bottom=False, left=False)
+
+    ax.set_xlim([states[:, 0].min() - 1.0, states[:, 0].max() + 1.0])
+    ax.set_ylim([states[:, 1].min() - 1.0, states[:, 1].max() + 1.0])
+    ax.set_aspect("equal")
+    ax.set_xlabel("X [m]")
+    ax.set_ylabel("Y [m]")
+    ax.legend(frameon=False, ncol=2, loc="upper center", bbox_to_anchor=(0.5, 1.6))
+
+    plt.savefig(
+        img_name,
+        dpi=200,
+        transparent=False,
+        bbox_inches="tight",
+    )
+
+    if show:
+        plt.show()

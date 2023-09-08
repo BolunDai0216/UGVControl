@@ -4,7 +4,7 @@ import pickle
 import numpy as np
 import pandas as pd
 from unicycle_env import UnicycleEnv
-from utils import get_p_control
+from utils import get_p_control, visualize_exp
 
 
 def main():
@@ -53,6 +53,8 @@ def main():
 
     with open(f"../data/{args.saveFilename}.pkl", "wb") as f:
         pickle.dump(data, f)
+
+    visualize_exp(data, f"../imgs/{args.saveFilename}.png", show=False)
 
 
 if __name__ == "__main__":
