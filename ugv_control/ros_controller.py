@@ -12,6 +12,7 @@ def main():
 
     rate = rospy.Rate(100)
     data_time = None
+    control = cmd_vel()
 
     time.sleep(1.0)
 
@@ -36,7 +37,6 @@ def main():
 
             # set control
             _control, _, _ = get_p_control(node.state, p_des)
-            control = cmd_vel()
             control.header.stamp = rospy.Time.now()
             control.velocity = _control[0]
             control.omega = _control[1]
@@ -45,7 +45,7 @@ def main():
             node.publish(control)
 
         if time_diff >= 2e-1:
-            print("Path is too old. Stopping the robot.")
+            rospy.logerr("Path is too old. Stopping the robot.")
             break
         
         rate.sleep()
