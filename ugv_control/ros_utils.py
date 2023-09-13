@@ -1,7 +1,9 @@
 import rospy
 from nav_msgs.msg import Path
-from ugv_msgs.msg import cmd_vel
-
+# from geometry_msgs.msg import Twist
+# from ugv_msgs.msg import cmd_vel 
+# import Commands
+from gmm.msg import Commands
 
 class UGVROSNode:
     def __init__(self):
@@ -12,10 +14,12 @@ class UGVROSNode:
         self.path = None
 
         # create a subscriber for the /local_planner topic
-        self.subscriber = rospy.Subscriber('/local_planner', Path, self.callback)
+        self.subscriber = rospy.Subscriber('/move_base/GlobalPlanner/plan', Path, self.callback)
+
+        # TODO: add tf subscriber parent: map, child: agent_base
 
         # create a publisher for the /cmd_vel topic
-        self.publisher = rospy.Publisher('/cmd_vel', cmd_vel, queue_size=10)
+        self.publisher = rospy.Publisher('/ap/cmd_vel', Commands, queue_size=10)
 
     def callback(self, data):
         self.path = data
