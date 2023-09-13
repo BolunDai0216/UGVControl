@@ -53,6 +53,8 @@ def main():
     assert path is not None, "path should not be None"
     assert path_time is not None, "path_time should not be None"
 
+    init_time = rospy.Time.now().to_time()
+
     # Main control loop
     while not rospy.is_shutdown():
         # retrieve the latest version of global planner COULD BE NONE!
@@ -68,7 +70,7 @@ def main():
             pose_list_len = len(path.poses)
 
         # TEST 1: See if always the path is the newest
-        # print(path_time)
+        # print(path_time - init_time)
 
         # Get desired position
         x_des = path.poses[pose_idx].pose.position.x
