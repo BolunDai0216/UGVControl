@@ -21,7 +21,7 @@ def main():
             control.velocity = 0.0
             control.omega = 0.0
             node.publish(control)
-            time.sleep(0.01)
+            rate.sleep()
 
         exit()
 

@@ -31,7 +31,7 @@ def main():
             control.velocity = 0.0
             control.omega = 0.0
             node.publish(control)
-            time.sleep(0.01)
+            rate.sleep()
 
         exit()
 
@@ -71,8 +71,8 @@ def main():
         # print(path_time)
 
         # Get desired position
-        x_des = path.poses[-1].pose.position.x
-        y_des = path.poses[-1].pose.position.y
+        x_des = path.poses[pose_idx].pose.position.x
+        y_des = path.poses[pose_idx].pose.position.y
         p_des = np.array([x_des, y_des])
 
         # TEST 2: See if the node state is updated correctly
@@ -91,10 +91,11 @@ def main():
         pos_error = np.linalg.norm(p_des - node.state[:2])
 
         # TEST 3: See if the desired position is updated correctly
-        #         i.e., if the pos_error <= 0.01 will the desired
-        #         position be updated?
+        #         i.e., if the pos_error <= error_threshold will
+        #         the desired position be updated?
         # print(pos_error, pose_idx, pose_list_len)
 
+        # update desired position
         if pos_error < error_threshold:
             pose_idx = np.minimum(pose_idx + 1, pose_list_len - 1)
 
